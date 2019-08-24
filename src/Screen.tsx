@@ -58,7 +58,7 @@ export default class Screen extends PureComponent<Props, State> {
   private getInnerHeight = (): number =>
     this.props.innerCanvas ? this.props.innerCanvas.element.height : DEFAULT_HEIGHT;
 
-  private updateOuterCanvasSize(): void {
+  private updateOuterCanvasSize = (): void => {
     const { containerId, outerCanvas } = this.state;
 
     const innerWidth = this.getInnerWidth();
@@ -71,7 +71,7 @@ export default class Screen extends PureComponent<Props, State> {
 
     outerCanvas.element.width = innerWidth * scaleFactor;
     outerCanvas.element.height = innerHeight * scaleFactor;
-  }
+  };
 
   public componentDidMount(): void {
     const { containerId, outerCanvas } = this.state;
@@ -79,12 +79,18 @@ export default class Screen extends PureComponent<Props, State> {
     container!.appendChild(outerCanvas.element);
 
     this.updateOuterCanvasSize();
+
+    window.addEventListener('resize', this.updateOuterCanvasSize);
   }
 
   public componentDidUpdate(prevProps: Props): void {
     if (this.props.innerCanvas !== prevProps.innerCanvas) {
       this.updateOuterCanvasSize();
     }
+  }
+
+  public componentWillUnmount(): void {
+    window.removeEventListener('resize', this.updateOuterCanvasSize);
   }
 
   public render = () => <Container id={this.state.containerId} />;
