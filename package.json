@@ -1,0 +1,35 @@
+{
+  "name": "snek",
+  "version": "0.1.0",
+  "repository": "git@github.com:jlippitt/snek",
+  "author": "James Lippitt <james.lippitt@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "format": "prettier --write './src/**/*'",
+    "lint": "tslint './src/**/*'",
+    "start": "http-server ./public"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "prettier --write",
+      "tslint --fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.3",
+    "prettier": "^1.18.2",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.19.0",
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
+}
