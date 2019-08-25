@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { setViewportSize, Size } from './actions';
 import randomId from './helpers/randomId';
 import { State as AppState } from './reducer';
-import { Container } from './Viewport.styles';
+import { Container, Placeholder } from './Viewport.styles';
 
 const CONTAINER_ID_PREFIX = 'snek-screen-';
 const DEFAULT_WIDTH = 256;
@@ -100,7 +100,16 @@ class Viewport extends PureComponent<Props, State> {
     window.removeEventListener('resize', this.resizeViewport);
   }
 
-  public render = () => <Container id={this.state.containerId} />;
+  public render() {
+    const { viewportSize: { width, height }, canvas } = this.props;
+    const { containerId } = this.state;
+
+    return (
+      <Container id={containerId}>
+        {canvas ? null : <Placeholder width={width} height={height} />}
+      </Container>
+    );
+  }
 }
 
 const mapStateToProps = (state: AppState): StateProps => ({
