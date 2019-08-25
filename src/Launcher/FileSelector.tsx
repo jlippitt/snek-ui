@@ -5,7 +5,7 @@ import randomId from 'helpers/randomId';
 const ID_PREFIX = 'snek-file-selector-';
 
 interface Props {
-  //onFileSelected(file: File): void;
+  onFileSelected(file: File): void;
 }
 
 interface State {
@@ -23,7 +23,7 @@ export default class FileSelector extends PureComponent<Props, State> {
     const files = element.files;
 
     if (files!.length > 0) {
-      //this.props.onFileSelected(files[0]);
+      this.props.onFileSelected(files![0]);
     }
   };
 

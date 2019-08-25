@@ -11,13 +11,10 @@ const CONTAINER_ID_PREFIX = 'snek-screen-';
 const DEFAULT_WIDTH = 256;
 const DEFAULT_HEIGHT = 240;
 
-export interface Canvas {
-  element: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-}
-
 interface StateProps {
-  innerCanvas?: Canvas;
+  screenSize: Size;
+  viewportSize: Size;
+  canvas?: HTMLCanvasElement;
 }
 
 interface DispatchProps {
@@ -28,93 +25,88 @@ type Props = StateProps & DispatchProps;
 
 interface State {
   containerId: string;
-  outerCanvas: Canvas;
 }
 
 class Viewport extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const { innerCanvas } = props;
-
-    const element = document.createElement('canvas');
-    element.width = this.getInnerWidth();
-    element.height = this.getInnerHeight();
-    element.style.display = 'block';
-    element.style.margin = 'auto';
-
-    const context = element.getContext('2d');
-
-    if (!context) {
-      throw new Error('2D rendering context unavailable');
-    }
-
-    // We want our sharp pixels!
-    context.imageSmoothingEnabled = false;
-
     this.state = {
       containerId: randomId(CONTAINER_ID_PREFIX),
-      outerCanvas: {
-        element,
-        context,
-      },
     };
   }
 
-  private getInnerWidth = (): number =>
-    this.props.innerCanvas ? this.props.innerCanvas.element.width : DEFAULT_WIDTH;
-
-  private getInnerHeight = (): number =>
-    this.props.innerCanvas ? this.props.innerCanvas.element.height : DEFAULT_HEIGHT;
-
-  private updateOuterCanvasSize = (): void => {
-    const { containerId, outerCanvas } = this.state;
-
-    const innerWidth = this.getInnerWidth();
-    const innerHeight = this.getInnerHeight();
+  private resizeViewport = (): void => {
+    const { screenSize, canvas } = this.props;
+    const { containerId } = this.state;
 
     const container = document.getElementById(containerId);
-    const maxWidthScale = Math.floor(container!.offsetWidth / innerWidth);
-    const maxHeightScale = Math.floor(container!.offsetHeight / innerHeight);
+    const maxWidthScale = Math.floor(container!.offsetWidth / screenSize.width);
+    const maxHeightScale = Math.floor(container!.offsetHeight / screenSize.height);
     const scaleFactor = Math.min(maxWidthScale, maxHeightScale);
 
     const outerWidth = innerWidth * scaleFactor;
     const outerHeight = innerHeight * scaleFactor;
 
-    outerCanvas.element.width = outerWidth;
-    outerCanvas.element.height = outerHeight;
-
     this.props.setViewportSize({
-      width: outerWidth,
-      height: outerHeight,
+      width: screenSize.width * scaleFactor,
+      height: screenSize.height * scaleFactor,
     });
   };
 
   public componentDidMount(): void {
-    const { containerId, outerCanvas } = this.state;
-    const container = document.getElementById(containerId);
-    container!.appendChild(outerCanvas.element);
+    const { viewportSize, canvas } = this.props;
+    const { containerId } = this.state;
 
-    this.updateOuterCanvasSize();
+    if (canvas) {
+      const container = document.getElementById(containerId);
+      canvas.width = viewportSize.width;
+      canvas.height = viewportSize.height;
+      container!.appendChild(canvas);
+    }
 
-    window.addEventListener('resize', this.updateOuterCanvasSize);
+    this.resizeViewport();
+
+    window.addEventListener('resize', this.resizeViewport);
   }
 
   public componentDidUpdate(prevProps: Props): void {
-    if (this.props.innerCanvas !== prevProps.innerCanvas) {
-      this.updateOuterCanvasSize();
+    const { screenSize, viewportSize, canvas } = this.props;
+    const { containerId } = this.state;
+
+    if (canvas !== prevProps.canvas) {
+      const container = document.getElementById(containerId);
+
+      if (prevProps.canvas) {
+        container!.removeChild(prevProps.canvas);
+      }
+
+      if (canvas) {
+        canvas.width = viewportSize.width;
+        canvas.height = viewportSize.height;
+        container!.appendChild(canvas);
+      }
+    } else if (canvas && viewportSize !== prevProps.viewportSize) {
+      canvas.width = viewportSize.width;
+      canvas.height = viewportSize.height;
+    }
+
+    if (screenSize !== prevProps.screenSize) {
+      this.resizeViewport();
     }
   }
 
   public componentWillUnmount(): void {
-    window.removeEventListener('resize', this.updateOuterCanvasSize);
+    window.removeEventListener('resize', this.resizeViewport);
   }
 
   public render = () => <Container id={this.state.containerId} />;
 }
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  innerCanvas: undefined,
+  screenSize: state.screenSize,
+  viewportSize: state.viewportSize,
+  canvas: state.canvas,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({

@@ -1,18 +1,29 @@
-export enum ActionType {
-  SetViewportSize
-}
-
 export interface Size {
   width: number;
   height: number;
 }
 
-interface SetViewportSize {
-  type: ActionType.SetViewportSize,
-  payload: Size,
+export enum ActionType {
+  LaunchGame,
+  SetViewportSize
 }
 
-export type Action = SetViewportSize;
+interface LaunchGame {
+  type: ActionType.LaunchGame;
+  payload: File;
+}
+
+interface SetViewportSize {
+  type: ActionType.SetViewportSize;
+  payload: Size;
+}
+
+export type Action = LaunchGame | SetViewportSize;
+
+export const launchGame = (payload: File) => ({
+  type: ActionType.LaunchGame,
+  payload,
+});
 
 export const setViewportSize = (payload: Size) => ({
   type: ActionType.SetViewportSize,
