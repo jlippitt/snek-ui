@@ -1,5 +1,10 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
+import { setViewportSize, Size } from './actions';
+import randomId from './helpers/randomId';
+import { State as AppState } from './reducer';
 import { Container } from './Screen.styles';
 
 const CONTAINER_ID_PREFIX = 'snek-screen-';
@@ -11,18 +16,22 @@ export interface Canvas {
   context: CanvasRenderingContext2D;
 }
 
-interface Props {
+interface StateProps {
   innerCanvas?: Canvas;
 }
+
+interface DispatchProps {
+  setViewportSize(payload: Size): void;
+}
+
+type Props = StateProps & DispatchProps;
 
 interface State {
   containerId: string;
   outerCanvas: Canvas;
 }
 
-const randomId = (): string => Math.random().toString(16).substr(2);
-
-export default class Screen extends PureComponent<Props, State> {
+class Screen extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -44,7 +53,7 @@ export default class Screen extends PureComponent<Props, State> {
     context.imageSmoothingEnabled = false;
 
     this.state = {
-      containerId: CONTAINER_ID_PREFIX + randomId(),
+      containerId: randomId(CONTAINER_ID_PREFIX),
       outerCanvas: {
         element,
         context,
@@ -69,8 +78,16 @@ export default class Screen extends PureComponent<Props, State> {
     const maxHeightScale = Math.floor(container!.offsetHeight / innerHeight);
     const scaleFactor = Math.min(maxWidthScale, maxHeightScale);
 
-    outerCanvas.element.width = innerWidth * scaleFactor;
-    outerCanvas.element.height = innerHeight * scaleFactor;
+    const outerWidth = innerWidth * scaleFactor;
+    const outerHeight = innerHeight * scaleFactor;
+
+    outerCanvas.element.width = outerWidth;
+    outerCanvas.element.height = outerHeight;
+
+    this.props.setViewportSize({
+      width: outerWidth,
+      height: outerHeight,
+    });
   };
 
   public componentDidMount(): void {
@@ -95,3 +112,13 @@ export default class Screen extends PureComponent<Props, State> {
 
   public render = () => <Container id={this.state.containerId} />;
 }
+
+const mapStateToProps = (state: AppState): StateProps => ({
+  innerCanvas: undefined,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  setViewportSize: (payload) => dispatch(setViewportSize(payload)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Screen);
