@@ -37,7 +37,7 @@ class Viewport extends PureComponent<Props, State> {
   }
 
   private resizeViewport = (): void => {
-    const { screenSize, canvas } = this.props;
+    const { screenSize } = this.props;
     const { containerId } = this.state;
 
     const container = document.getElementById(containerId);
