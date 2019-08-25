@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { State } from 'reducer';
+
 import FileSelector from './FileSelector';
 import { Container } from './Launcher.styles';
-import { State } from './reducer';
 
 interface Props {
   viewportWidth: number;

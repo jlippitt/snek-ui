@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import randomId from './helpers/randomId';
+import randomId from 'helpers/randomId';
 
 const ID_PREFIX = 'snek-file-selector-';
 
