@@ -5,6 +5,7 @@ interface ContainerProps {
 }
 
 export const Container = styled.div<ContainerProps>`
+  margin: auto;
   height: 80px;
-  min-width: ${({ viewportWidth }) => viewportWidth}px;
+  width: ${({ viewportWidth }) => viewportWidth}px;
 `;
