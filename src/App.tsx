@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Container } from './App.styles';
 import Launcher from './Launcher';
-import Screen from './Screen';
+import Viewport from './Viewport';
 
 export default () => (
   <Container>
     <Launcher />
-    <Screen />
+    <Viewport />
   </Container>
 );

@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { setViewportSize, Size } from './actions';
 import randomId from './helpers/randomId';
 import { State as AppState } from './reducer';
-import { Container } from './Screen.styles';
+import { Container } from './Viewport.styles';
 
 const CONTAINER_ID_PREFIX = 'snek-screen-';
 const DEFAULT_WIDTH = 256;
@@ -31,7 +31,7 @@ interface State {
   outerCanvas: Canvas;
 }
 
-class Screen extends PureComponent<Props, State> {
+class Viewport extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -121,4 +121,4 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   setViewportSize: (payload) => dispatch(setViewportSize(payload)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Screen);
+export default connect(mapStateToProps, mapDispatchToProps)(Viewport);
