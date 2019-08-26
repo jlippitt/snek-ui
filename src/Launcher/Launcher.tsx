@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 
-import { launchGame } from 'actions';
+import { Dispatch, launchGame } from 'actions';
 import { State } from 'reducer';
 
 import FileSelector from './FileSelector';

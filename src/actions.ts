@@ -1,16 +1,42 @@
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { EmulatorOptions } from './Api';
+import bootstrap, { BootstrapResult } from './bootstrap';
+import { State } from './reducer';
+
+export type Dispatch = ThunkDispatch<State, {}, AnyAction>;
+
 export interface Size {
   width: number;
   height: number;
 }
 
 export enum ActionType {
-  LaunchGame,
-  SetViewportSize
+  LaunchGameStart,
+  LaunchGameSuccess,
+  LaunchGameError,
+  RegisterEmulator,
+  SetViewportSize,
 }
 
-interface LaunchGame {
-  type: ActionType.LaunchGame;
-  payload: File;
+interface LaunchGameStart {
+  type: ActionType.LaunchGameStart;
+}
+
+interface LaunchGameSuccess {
+  type: ActionType.LaunchGameSuccess;
+  payload: BootstrapResult;
+};
+
+interface LaunchGameError {
+  type: ActionType.LaunchGameError;
+  payload: Error;
+};
+
+interface RegisterEmulator {
+  type: ActionType.RegisterEmulator;
+  payload: EmulatorOptions;
 }
 
 interface SetViewportSize {
@@ -18,10 +44,38 @@ interface SetViewportSize {
   payload: Size;
 }
 
-export type Action = LaunchGame | SetViewportSize;
+export type Action = LaunchGameStart | LaunchGameSuccess | LaunchGameError | RegisterEmulator | SetViewportSize;
 
-export const launchGame = (payload: File) => ({
-  type: ActionType.LaunchGame,
+export const launchGame = (file: File) => async (dispatch: Dispatch, getState: () => State) => {
+  dispatch(launchGameStart());
+
+  try {
+    const { availableEmulators } = getState();
+    const result = await bootstrap(availableEmulators, file);
+    dispatch(launchGameSuccess(result));
+  } catch (err) {
+    // tslint:disable no-console
+    console.log(err.stack);
+    dispatch(launchGameError(err));
+  }
+};
+
+export const launchGameStart = () => ({
+  type: ActionType.LaunchGameStart,
+});
+
+export const launchGameSuccess = (payload: BootstrapResult) => ({
+  type: ActionType.LaunchGameSuccess,
+  payload,
+});
+
+export const launchGameError = (payload: Error) => ({
+  type: ActionType.LaunchGameError,
+  payload,
+});
+
+export const registerEmulator = (payload: EmulatorOptions) => ({
+  type: ActionType.RegisterEmulator,
   payload,
 });
 

@@ -25,6 +25,7 @@
   "devDependencies": {
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
+    "@types/redux-thunk": "^2.1.0",
     "@types/styled-components": "^4.1.18",
     "husky": "^3.0.4",
     "lint-staged": "^9.2.3",
@@ -42,6 +43,7 @@
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
     "styled-components": "^4.3.2"
   }
 }
