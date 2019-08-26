@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Dispatch, launchGame } from 'actions';
+import { Dispatch, launchGame, resetGame } from 'actions';
 import { State } from 'reducer';
 
 import Runner from '../Runner';
@@ -14,10 +14,12 @@ interface OwnProps {
 
 interface StateProps {
   viewportWidth: number;
+  isRunning: boolean;
 }
 
 interface DispatchProps {
   launchGame(file: File): void;
+  resetGame(): void;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -25,6 +27,9 @@ type Props = OwnProps & StateProps & DispatchProps;
 const Launcher = (props: Props) => (
   <Container viewportWidth={props.viewportWidth}>
     <FileSelector onFileSelected={props.launchGame} />
+    <button onClick={props.resetGame} disabled={!props.isRunning}>
+      Reset
+    </button>
   </Container>
 );
 
@@ -34,6 +39,7 @@ const mapStateToProps = (
 ): OwnProps & StateProps => ({
   runner: props.runner,
   viewportWidth: state.viewportSize.width,
+  isRunning: !!state.canvas,
 });
 
 const mapDispatchToProps = (
@@ -41,6 +47,7 @@ const mapDispatchToProps = (
   props: OwnProps,
 ): DispatchProps => ({
   launchGame: (payload) => dispatch(launchGame(props.runner, payload)),
+  resetGame: () => dispatch(resetGame(props.runner)),
 });
 
 export default connect(

@@ -63,6 +63,22 @@ export const launchGame = (runner: Runner, file: File) => async (
   }
 };
 
+export const resetGame = (runner: Runner) => (
+  dispatch: Dispatch,
+  getState: () => State,
+) => {
+  dispatch(launchGameStart());
+
+  try {
+    const result = runner.reset();
+    dispatch(launchGameSuccess(result));
+  } catch (err) {
+    // tslint:disable no-console
+    console.log(err.stack);
+    dispatch(launchGameError(err));
+  }
+};
+
 export const launchGameStart = () => ({
   type: ActionType.LaunchGameStart,
 });
