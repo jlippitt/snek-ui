@@ -5,7 +5,7 @@ import { createScreen } from './screen';
 
 const getFileExtension = (file: File): string => {
   const match = /\.(\w+)$/.exec(file.name);
-  return (match && match[1]) ? match[1] : '';
+  return match && match[1] ? match[1] : '';
 };
 
 const getRomData = (file: File): Promise<Uint8Array> => {
@@ -25,11 +25,14 @@ export interface BootstrapResult {
   canvas: HTMLCanvasElement;
 }
 
-export default async (availableEmulators: EmulatorOptions[], file: File): Promise<BootstrapResult> => {
+export default async (
+  availableEmulators: EmulatorOptions[],
+  file: File,
+): Promise<BootstrapResult> => {
   const extension = getFileExtension(file);
 
   const emulator = availableEmulators.find(({ fileExtensions }) =>
-    fileExtensions.includes(extension)
+    fileExtensions.includes(extension),
   );
 
   if (!emulator) {
@@ -79,4 +82,3 @@ export default async (availableEmulators: EmulatorOptions[], file: File): Promis
     canvas,
   };
 };
-

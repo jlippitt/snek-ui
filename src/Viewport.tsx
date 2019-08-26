@@ -37,24 +37,6 @@ class Viewport extends PureComponent<Props, State> {
     };
   }
 
-  private resizeViewport = (): void => {
-    const { screenSize } = this.props;
-    const { containerId } = this.state;
-
-    const container = document.getElementById(containerId);
-    const maxWidthScale = Math.floor(container!.offsetWidth / screenSize.width);
-    const maxHeightScale = Math.floor(container!.offsetHeight / screenSize.height);
-    const scaleFactor = Math.min(maxWidthScale, maxHeightScale);
-
-    const outerWidth = innerWidth * scaleFactor;
-    const outerHeight = innerHeight * scaleFactor;
-
-    this.props.setViewportSize({
-      width: screenSize.width * scaleFactor,
-      height: screenSize.height * scaleFactor,
-    });
-  };
-
   public componentDidMount(): void {
     const { viewportSize, canvas } = this.props;
     const { containerId } = this.state;
@@ -102,7 +84,10 @@ class Viewport extends PureComponent<Props, State> {
   }
 
   public render() {
-    const { viewportSize: { width, height }, canvas } = this.props;
+    const {
+      viewportSize: { width, height },
+      canvas,
+    } = this.props;
     const { containerId } = this.state;
 
     return (
@@ -110,6 +95,26 @@ class Viewport extends PureComponent<Props, State> {
         {canvas ? null : <Placeholder width={width} height={height} />}
       </Container>
     );
+  }
+
+  private resizeViewport = (): void => {
+    const { screenSize } = this.props;
+    const { containerId } = this.state;
+
+    const container = document.getElementById(containerId);
+    const maxWidthScale = Math.floor(container!.offsetWidth / screenSize.width);
+    const maxHeightScale = Math.floor(
+      container!.offsetHeight / screenSize.height,
+    );
+    const scaleFactor = Math.min(maxWidthScale, maxHeightScale);
+
+    const outerWidth = innerWidth * scaleFactor;
+    const outerHeight = innerHeight * scaleFactor;
+
+    this.props.setViewportSize({
+      width: screenSize.width * scaleFactor,
+      height: screenSize.height * scaleFactor,
+    });
   }
 }
 
@@ -123,4 +128,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   setViewportSize: (payload) => dispatch(setViewportSize(payload)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Viewport);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Viewport);

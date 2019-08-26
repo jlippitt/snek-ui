@@ -22,12 +22,12 @@ interface LaunchGameStart {
 interface LaunchGameSuccess {
   type: ActionType.LaunchGameSuccess;
   payload: BootstrapResult;
-};
+}
 
 interface LaunchGameError {
   type: ActionType.LaunchGameError;
   payload: Error;
-};
+}
 
 interface RegisterEmulator {
   type: ActionType.RegisterEmulator;
@@ -39,9 +39,17 @@ interface SetViewportSize {
   payload: Size;
 }
 
-export type Action = LaunchGameStart | LaunchGameSuccess | LaunchGameError | RegisterEmulator | SetViewportSize;
+export type Action =
+  | LaunchGameStart
+  | LaunchGameSuccess
+  | LaunchGameError
+  | RegisterEmulator
+  | SetViewportSize;
 
-export const launchGame = (file: File) => async (dispatch: Dispatch, getState: () => State) => {
+export const launchGame = (file: File) => async (
+  dispatch: Dispatch,
+  getState: () => State,
+) => {
   dispatch(launchGameStart());
 
   try {

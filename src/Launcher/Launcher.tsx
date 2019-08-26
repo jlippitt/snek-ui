@@ -31,4 +31,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   launchGame: (payload) => dispatch(launchGame(payload)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Launcher);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Launcher);
