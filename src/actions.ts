@@ -2,8 +2,8 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { EmulatorOptions, Size } from 'snek-client';
 
-import bootstrap, { BootstrapResult } from './bootstrap';
 import { State } from './reducer';
+import Runner, { GameInfo } from './Runner';
 
 export type Dispatch = ThunkDispatch<State, {}, AnyAction>;
 
@@ -21,7 +21,7 @@ interface LaunchGameStart {
 
 interface LaunchGameSuccess {
   type: ActionType.LaunchGameSuccess;
-  payload: BootstrapResult;
+  payload: GameInfo;
 }
 
 interface LaunchGameError {
@@ -46,7 +46,7 @@ export type Action =
   | RegisterEmulator
   | SetViewportSize;
 
-export const launchGame = (file: File) => async (
+export const launchGame = (runner: Runner, file: File) => async (
   dispatch: Dispatch,
   getState: () => State,
 ) => {
@@ -54,7 +54,7 @@ export const launchGame = (file: File) => async (
 
   try {
     const { availableEmulators } = getState();
-    const result = await bootstrap(availableEmulators, file);
+    const result = await runner.launch(availableEmulators, file);
     dispatch(launchGameSuccess(result));
   } catch (err) {
     // tslint:disable no-console
@@ -67,7 +67,7 @@ export const launchGameStart = () => ({
   type: ActionType.LaunchGameStart,
 });
 
-export const launchGameSuccess = (payload: BootstrapResult) => ({
+export const launchGameSuccess = (payload: GameInfo) => ({
   type: ActionType.LaunchGameSuccess,
   payload,
 });

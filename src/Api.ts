@@ -2,7 +2,6 @@ import { AnyAction, Store } from 'redux';
 import { Api as ApiInterface, EmulatorOptions } from 'snek-client';
 
 import { registerEmulator } from './actions';
-import AudioController from './bootstrap/AudioController';
 import { State } from './reducer';
 
 export default class Api implements ApiInterface {
