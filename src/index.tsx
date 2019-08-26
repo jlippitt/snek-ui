@@ -8,12 +8,6 @@ import Api from './Api';
 import App from './App';
 import reducer from './reducer';
 
-declare global {
-  interface Window {
-    snek: Api;
-  }
-}
-
 if (typeof window.snek !== 'undefined') {
   throw new Error('GUI already loaded?');
 }

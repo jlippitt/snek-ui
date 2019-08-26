@@ -1,4 +1,6 @@
-export default class AudioController {
+import { AudioController as AudioControllerInterface } from 'snek-client';
+
+export default class AudioController implements AudioControllerInterface {
   private context: AudioContext;
   private expectedTime: number;
 

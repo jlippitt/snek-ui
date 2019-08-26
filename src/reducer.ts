@@ -1,5 +1,6 @@
-import { Action, ActionType, Size } from './actions';
-import { EmulatorOptions } from './Api';
+import { EmulatorOptions, Size } from 'snek-client';
+
+import { Action, ActionType } from './actions';
 
 const DEFAULT_SCREEN_SIZE = {
   width: 256,

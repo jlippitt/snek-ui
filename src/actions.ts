@@ -1,16 +1,11 @@
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { EmulatorOptions, Size } from 'snek-client';
 
-import { EmulatorOptions } from './Api';
 import bootstrap, { BootstrapResult } from './bootstrap';
 import { State } from './reducer';
 
 export type Dispatch = ThunkDispatch<State, {}, AnyAction>;
-
-export interface Size {
-  width: number;
-  height: number;
-}
 
 export enum ActionType {
   LaunchGameStart,

@@ -1,5 +1,5 @@
-import { Size } from '../actions';
-import { EmulatorOptions } from '../Api';
+import { EmulatorOptions, Size } from 'snek-client';
+
 import AudioController from './AudioController';
 
 const getFileExtension = (file: File): string => {

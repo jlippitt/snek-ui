@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { Size } from 'snek-client';
 
-import { setViewportSize, Size } from './actions';
+import { setViewportSize } from './actions';
 import randomId from './helpers/randomId';
 import { State as AppState } from './reducer';
 import { Container, Placeholder } from './Viewport.styles';
