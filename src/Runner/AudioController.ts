@@ -9,6 +9,10 @@ export default class AudioController implements AudioControllerInterface {
     this.expectedTime = this.context.currentTime;
   }
 
+  public close() {
+    this.context.close();
+  }
+
   public suspend() {
     this.context.suspend();
   }

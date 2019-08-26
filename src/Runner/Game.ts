@@ -16,6 +16,7 @@ export default class Game {
   private emulator: EmulatorOptions;
   private romData: Uint8Array;
   private canvas: HTMLCanvasElement;
+  private audio: AudioController;
   private frameRequest: number;
   private visibilityListener: () => void;
 
@@ -27,10 +28,10 @@ export default class Game {
 
     this.canvas = canvas;
 
-    const audio = new AudioController(emulator.audio.sampleRate);
+    this.audio = new AudioController(emulator.audio.sampleRate);
 
     const game = emulator.bootstrap({
-      audio,
+      audio: this.audio,
       screen,
       romData: this.romData,
     });
@@ -45,11 +46,11 @@ export default class Game {
 
     this.visibilityListener = () => {
       if (document.hidden) {
-        audio.suspend();
+        this.audio.suspend();
         window.cancelAnimationFrame(this.frameRequest);
         game.suspend();
       } else {
-        audio.resume();
+        this.audio.resume();
         this.frameRequest = window.requestAnimationFrame(renderFrame);
         game.resume();
       }
@@ -63,6 +64,7 @@ export default class Game {
   public stop(): void {
     window.cancelAnimationFrame(this.frameRequest);
     window.removeEventListener('visibilitychange', this.visibilityListener);
+    this.audio.close();
   }
 
   public getInfo = (): GameInfo => ({
