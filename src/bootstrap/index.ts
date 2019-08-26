@@ -1,6 +1,7 @@
 import { EmulatorOptions, Size } from 'snek-client';
 
 import AudioController from './AudioController';
+import { createScreen } from './screen';
 
 const getFileExtension = (file: File): string => {
   const match = /\.(\w+)$/.exec(file.name);
@@ -17,28 +18,6 @@ const getRomData = (file: File): Promise<Uint8Array> => {
 
     reader.readAsArrayBuffer(file);
   });
-};
-
-const createCanvas = (
-  width: number,
-  height: number,
-): [HTMLCanvasElement, CanvasRenderingContext2D] => {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  canvas.style.display = 'block';
-  canvas.style.margin = 'auto';
-
-  const context = canvas.getContext('2d');
-
-  if (!context) {
-    throw new Error('2D rendering context unavailable');
-  }
-
-  // We want our sharp pixels!
-  context.imageSmoothingEnabled = false;
-
-  return [canvas, context];
 };
 
 export interface BootstrapResult {
@@ -60,28 +39,9 @@ export default async (availableEmulators: EmulatorOptions[], file: File): Promis
 
   const romData = await getRomData(file);
 
-  const { width, height } = emulator.screen;
-
-  const [innerCanvas, innerContext] = createCanvas(width, height);
-  const [outerCanvas, outerContext] = createCanvas(width, height);
-
-  const image = innerContext.createImageData(width, height);
-
-  const update = (): void => {
-    innerContext.putImageData(image, 0, 0);
-
-    outerContext.drawImage(
-      innerCanvas,
-      0,
-      0,
-      outerCanvas.width,
-      outerCanvas.height,
-    );
-  };
+  const { screen, canvas } = createScreen(emulator.screen);
 
   const audio = new AudioController(emulator.audio.sampleRate);
-
-  const screen = { image, update };
 
   const game = emulator.bootstrap({
     audio,
@@ -115,8 +75,8 @@ export default async (availableEmulators: EmulatorOptions[], file: File): Promis
   frameRequest = window.requestAnimationFrame(renderFrame);
 
   return {
-    screenSize: { width, height },
-    canvas: outerCanvas,
+    screenSize: emulator.screen,
+    canvas,
   };
 };
 
