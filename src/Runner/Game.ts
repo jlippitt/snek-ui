@@ -9,10 +9,10 @@ export interface GameInfo {
 }
 
 export default class Game {
-
   public static clone(game: Game): Game {
     return new Game(game.emulator, game.romData);
   }
+
   private emulator: EmulatorOptions;
   private romData: Uint8Array;
   private canvas: HTMLCanvasElement;
