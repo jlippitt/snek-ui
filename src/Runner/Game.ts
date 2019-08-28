@@ -1,6 +1,7 @@
 import { EmulatorOptions, Size } from 'snek-client';
 
 import AudioController from './AudioController';
+import Joypad from './Joypad';
 import { createScreen } from './screen';
 
 export interface GameInfo {
@@ -17,6 +18,7 @@ export default class Game {
   private romData: Uint8Array;
   private canvas: HTMLCanvasElement;
   private audio: AudioController;
+  private joypad: Joypad;
   private frameRequest: number;
   private visibilityListener: () => void;
 
@@ -30,9 +32,12 @@ export default class Game {
 
     this.audio = new AudioController(emulator.audio.sampleRate);
 
+    this.joypad = new Joypad();
+
     const game = emulator.bootstrap({
-      audio: this.audio,
       screen,
+      audio: this.audio,
+      joypad: this.joypad,
       romData: this.romData,
     });
 
@@ -70,6 +75,7 @@ export default class Game {
     window.cancelAnimationFrame(this.frameRequest);
     window.removeEventListener('visibilitychange', this.visibilityListener);
     this.audio.close();
+    this.joypad.close();
   }
 
   public getInfo = (): GameInfo => ({
