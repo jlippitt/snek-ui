@@ -37,7 +37,12 @@ export default class Game {
     });
 
     const renderFrame = (now: number): void => {
-      game.update(now);
+      try {
+        game.update(now);
+      } catch (err) {
+        alert(err.stack);
+        return;
+      }
 
       if (!document.hidden) {
         this.frameRequest = window.requestAnimationFrame(renderFrame);
