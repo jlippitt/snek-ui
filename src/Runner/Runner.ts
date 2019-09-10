@@ -4,7 +4,7 @@ import Game, { GameInfo } from './Game';
 
 const getFileExtension = (file: File): string => {
   const match = /\.(\w+)$/.exec(file.name);
-  return match && match[1] ? match[1] : '';
+  return match && match[1] ? match[1].toLowerCase() : '';
 };
 
 const getRomData = (file: File): Promise<Uint8Array> => {
