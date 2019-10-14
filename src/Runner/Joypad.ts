@@ -9,8 +9,8 @@ enum ControllerType {
 const KEYBOARD_MAP: { [key: string]: keyof JoypadState } = {
   'z': 'b',
   'x': 'a',
-  'a': 'x',
-  's': 'y',
+  'a': 'y',
+  's': 'x',
   'q': 'l',
   'w': 'r',
   ' ': 'select',
