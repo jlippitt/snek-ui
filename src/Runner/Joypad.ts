@@ -9,6 +9,10 @@ enum ControllerType {
 const KEYBOARD_MAP: { [key: string]: keyof JoypadState } = {
   'z': 'b',
   'x': 'a',
+  'a': 'x',
+  's': 'y',
+  'q': 'l',
+  'w': 'r',
   ' ': 'select',
   'Enter': 'start',
   'ArrowUp': 'up',
@@ -33,6 +37,10 @@ export default class Joypad {
     this.state = {
       a: false,
       b: false,
+      x: false,
+      y: false,
+      l: false,
+      r: false,
       select: false,
       start: false,
       up: false,
@@ -66,6 +74,10 @@ export default class Joypad {
 
         this.state.a = buttons[1].pressed;
         this.state.b = buttons[0].pressed;
+        this.state.x = buttons[3].pressed;
+        this.state.y = buttons[2].pressed;
+        this.state.l = buttons[4].pressed;
+        this.state.r = buttons[5].pressed;
         this.state.select = buttons[8].pressed;
         this.state.start = buttons[9].pressed;
         this.state.up = buttons[12].pressed;
